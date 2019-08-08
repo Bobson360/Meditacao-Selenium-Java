@@ -1,5 +1,7 @@
 package test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -16,21 +18,22 @@ import com.br.utils.Utils;
 import pages.Meditacao;
 
 public class MeditacaoTest extends Utils {
-
+	
 	static WebDriver driver;
 	static Meditacao meditacao;
-
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-
-		// chamar os exe
-		System.setProperty("webdriver.chrome.driver", "C:/chromedriver.exe");
-		// System.setProperty("webdriver.gecko.driver", "C:/geckodriver.exe");
+		File chromeDriver = new File("chromedriver.exe");
+		
+		// executa o chromedriver a partir da raiz so projeto 
+		System.setProperty("webdriver.chrome.driver", chromeDriver.getCanonicalPath());
 
 		driver = new ChromeDriver();
 		// driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
+		
+		
 		meditacao = new Meditacao(driver);
 	}
 
@@ -44,20 +47,23 @@ public class MeditacaoTest extends Utils {
 
 	@After
 	public void tearDown() throws Exception {
-//		driver.close();
+		driver.quit();
 	}
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 		if (!getFirstLink()) {
 			driver.get(getURL());
 			driver.findElement(By.xpath("//span[@class='mdl-button__ripple-container']")).click();
-			Meditacao.mapElements();
+			meditacao.mapElements();
 		}
 		for (int i = 0; i < getDays(); i++) {
 			driver.get(getURL());
-			Meditacao.mapElements();
+			meditacao.mapElements();
 		}
+		
+		System.out.println("Variavel file");
+	Meditacao.getFile();
 	}
 
 	
